@@ -9,19 +9,17 @@ typedef unsigned short word;
 
 #include "font.h"
 
-#define bit(x) (1<<(x))
-#define min(x, y) ((x) <= (y) ? (x): (y))
-#define max(x, y) ((x) >= (y) ? (x): (y))
+#define bit(x) (1 << (x))
+#define min(x, y) ((x) <= (y) ? (x) : (y))
+#define max(x, y) ((x) >= (y) ? (x) : (y))
 
 // Spacing of tab stops for write('\t')
 #define FRAMEBUFFER_DEFAULT_TABSTOP 8
 
-class FrameBuffer{
+class FrameBuffer {
 public:
   FrameBuffer(){};
-  FrameBuffer(int x, int y){
-    init(x, y);
-  };
+  FrameBuffer(int x, int y) { init(x, y); };
   byte *buf = NULL;
   int WIDTH;
   int HEIGHT;
@@ -40,11 +38,11 @@ public:
   //
   // methods for  drawing graphics
   //
-  inline void pset(int x, int y){ // fast but without parameter domain check
-    buf[x*m_ybytes + (y / 8)] |= bit(y & 7);
+  inline void pset(int x, int y) { // fast but without parameter domain check
+    buf[x * m_ybytes + (y / 8)] |= bit(y & 7);
   };
-  inline void preset(int x, int y){ // fast but without parameter domain check
-    buf[x*m_ybytes + (y / 8)] &= ~bit(y & 7);
+  inline void preset(int x, int y) { // fast but without parameter domain check
+    buf[x * m_ybytes + (y / 8)] &= ~bit(y & 7);
   };
   int getPixel(int x, int y);
   int getPixelMSBfirst(int x, int y);
@@ -78,6 +76,7 @@ public:
   void loadBitmapHLSB(byte *bmp, int width, int height);
   void loadBitmapBMP(byte *bmp, int width, int height);
   void loadBitmapBytePerPixel(byte *bmp, int width, int height);
+
 private:
   int m_ybytes; // = HEIGHT / 8
   //
@@ -109,6 +108,5 @@ private:
   int *m_pfont_width = NULL;
   int bitmapContentWidth(const byte *bitmap, int width, int height);
 };
-
 
 #endif

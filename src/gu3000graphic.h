@@ -7,22 +7,20 @@
 // using Parallel Interface Graphic DMA mode
 // use 'GU3000normal.h' if you use normal command mode
 
-#include "gu3000gpio.h"
 #include "framebuffer.h"
+#include "gu3000gpio.h"
 
 //
 //   Graphic DMA Command Mode
 //
 class GU3000Graphic : public FrameBuffer, private GU3000GPIO {
- public:
-  GU3000Graphic(){
-    init();
-  };
+public:
+  GU3000Graphic() { init(); };
   // Geometry of Visible Area
   int xsize;
   int ysize;
   //
-  void init(){
+  void init() {
     init(VFD_Xdots, VFD_Ydots, VFD_DispMemSize, VFD_DAD_BROADCAST);
   };
   void init(int x, int y, int memsize, word DAD);
@@ -31,7 +29,7 @@ class GU3000Graphic : public FrameBuffer, private GU3000GPIO {
   //
   // Native Graphic DMA Commands of VFD
   //
-  void writeBitImage(word address,  word imagesize, byte *bitmap);
+  void writeBitImage(word address, word imagesize, byte *bitmap);
   void writeAreaBitImage(word address, word xbyte, word ybyte, byte *bitmap);
   void setDisplayStartAddress(word address);
   void syncNextCommand();
@@ -52,6 +50,7 @@ class GU3000Graphic : public FrameBuffer, private GU3000GPIO {
   void syncAndShow();
   void syncRotateAndShow();
   void showAllArea();
+
 private:
   //
   byte *m_buf = NULL;

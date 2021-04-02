@@ -6,19 +6,18 @@
 // Header file commonly used for graphic DMA mode (gu3000graphic.cpp)
 // and for normal command mode (gu3000normal.cpp)
 
-
-#include<stdio.h>
-#include<stdlib.h>
-#include<wiringPi.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <wiringPi.h>
 
 typedef unsigned char byte;
 typedef unsigned short word;
 
 //#define VFD_DEGUB_IGNORE_RDY // for debug without VFD module
 
-#define bit(x) (1<<(x))
-#define min(x, y) ((x) <= (y) ? (x): (y))
-#define max(x, y) ((x) >= (y) ? (x): (y))
+#define bit(x) (1 << (x))
+#define min(x, y) ((x) <= (y) ? (x) : (y))
+#define max(x, y) ((x) >= (y) ? (x) : (y))
 
 // specification of GU-3000 series 256x128 model
 // (see software manual Sec.3.2 "Display Memory configuration")

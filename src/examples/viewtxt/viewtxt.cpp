@@ -1,10 +1,10 @@
+#include <gu3000graphic.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <gu3000graphic.h>
 
 #define DEFAULT_FONTNAME "Noritake6x8"
 
-void usage(){
+void usage() {
   fprintf(stderr, "Usage: viewtxt [OPTION]... [FILE]\n");
   fprintf(stderr, "  -f fontname : select font\n");
   fprintf(stderr, "  -h : show usage\n");
@@ -17,13 +17,13 @@ void usage(){
   exit(1);
 }
 
-void showfontlist(VFD *vfd){
-  for(int i = 0; vfd->fontList[i] != NULL; i++){
+void showfontlist(VFD *vfd) {
+  for (int i = 0; vfd->fontList[i] != NULL; i++) {
     printf("%s\n", vfd->fontList[i]->name);
   }
 }
 
-int main(int argc, char *argv[]){
+int main(int argc, char *argv[]) {
   VFD vfd;
   FILE *fp;
   const char *filename = NULL;
@@ -32,54 +32,55 @@ int main(int argc, char *argv[]){
   size_t len;
   ssize_t n_read;
   bool proportional = false;
-  
-  for(int i = 1; i < argc; i++){
-    if(argv[i][0] == '-'){
-      switch(argv[i][1]){
+
+  for (int i = 1; i < argc; i++) {
+    if (argv[i][0] == '-') {
+      switch (argv[i][1]) {
       case 'f':
-	i++;
-	if(i >= argc) usage();
-	fontname = argv[i];
-	break;
+        i++;
+        if (i >= argc)
+          usage();
+        fontname = argv[i];
+        break;
       case 'h':
-	usage();
+        usage();
       case 'p':
-	proportional = true;
-	break;
+        proportional = true;
+        break;
       case 'l':
-	showfontlist(&vfd);
-	exit(0);
+        showfontlist(&vfd);
+        exit(0);
       default:
-	usage();
+        usage();
       }
     } else {
-      if(filename == NULL){
-	filename = argv[i];
+      if (filename == NULL) {
+        filename = argv[i];
       } else {
-	usage();
+        usage();
       }
     }
   }
-  if( filename == NULL){
+  if (filename == NULL) {
     fp = stdin;
   } else {
-    if((fp = fopen(filename, "r")) == NULL){
+    if ((fp = fopen(filename, "r")) == NULL) {
       fprintf(stderr, "%s: Cannot open file '%s'\n", argv[0], filename);
       exit(1);
     }
   }
 
   // Fixed width
-  if(fontname == NULL){
+  if (fontname == NULL) {
     fontname = DEFAULT_FONTNAME;
   }
 
   vfd.setFontByName(fontname);
-  if(proportional){
+  if (proportional) {
     vfd.setFontProportional();
   }
- 
-  while((n_read = getline(&line, &len, fp)) != -1){
+
+  while ((n_read = getline(&line, &len, fp)) != -1) {
 #if 0
     for(int i = 0; i < n_read; i++){
       vfd.putchar(line[i]);
@@ -87,7 +88,7 @@ int main(int argc, char *argv[]){
     }
 #else
     vfd.puts(line);
-    //vfd.showAllArea();
+    // vfd.showAllArea();
     vfd.show();
 #endif
   }

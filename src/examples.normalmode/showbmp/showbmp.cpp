@@ -1,20 +1,20 @@
+#include <framebuffer.h>
+#include <gu3000normal.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <gu3000normal.h>
-#include <framebuffer.h>
 
 #pragma pack(1)
-typedef struct{
+typedef struct {
   unsigned short bfType;
-  unsigned int   bfSize;
+  unsigned int bfSize;
   unsigned short bfReserverd1;
   unsigned short bfReserverd2;
-  unsigned int   bfOffBits;
+  unsigned int bfOffBits;
 } BitmapFileHeader;
 #pragma pack()
 
 #pragma pack(1)
-typedef struct{
+typedef struct {
   unsigned int biSize;
   int biWidth;
   int biHeight;
@@ -29,9 +29,9 @@ typedef struct{
 } BitmapInformationHeader;
 #pragma pack()
 
-byte swapbit8(byte x){
+byte swapbit8(byte x) {
   int y = 0;
-  for(int i = 0; i < 8; i++){
+  for (int i = 0; i < 8; i++) {
     y <<= 1;
     y = y | (x & 1);
     x >>= 1;
@@ -39,45 +39,48 @@ byte swapbit8(byte x){
   return y;
 }
 
-int main(int argc, char *argv[]){
+int main(int argc, char *argv[]) {
   VFD vfd;
   FILE *fp;
 
-  if(argc <= 1){
+  if (argc <= 1) {
     fp = stdin;
   } else {
     fp = fopen(argv[1], "r");
-    if( fp == NULL){
+    if (fp == NULL) {
       perror("fopen");
       exit(EXIT_FAILURE);
     }
   }
-  
+
   FrameBuffer fbOut(vfd.xsize, vfd.ysize);
-  
+
   BitmapFileHeader fHeader;
   BitmapInformationHeader iHeader;
-    
-  //vfd.setBrightness(VFD_BRIGHTNESS_OFF);
+
+  // vfd.setBrightness(VFD_BRIGHTNESS_OFF);
   vfd.setBrightness(VFD_BRIGHTNESS_MID);
-  
+
   fread(&fHeader, sizeof(BitmapFileHeader), 1, fp);
   fread(&iHeader, sizeof(BitmapInformationHeader), 1, fp);
 
-  int skipSize = fHeader.bfOffBits - sizeof(BitmapFileHeader) - sizeof(BitmapInformationHeader);
-  if(skipSize > 0){
+  int skipSize = fHeader.bfOffBits - sizeof(BitmapFileHeader) -
+                 sizeof(BitmapInformationHeader);
+  if (skipSize > 0) {
     fseek(fp, skipSize, SEEK_CUR);
   }
 
-  printf("%c%c(%04x) ", (char)fHeader.bfType, (char)(fHeader.bfType>>8), fHeader.bfType);
+  printf("%c%c(%04x) ", (char)fHeader.bfType, (char)(fHeader.bfType >> 8),
+         fHeader.bfType);
   printf("bfOffBits=%d ", fHeader.bfOffBits);
   printf("biWidth=%08x ", iHeader.biWidth);
   printf("biHeight=%08x ", iHeader.biHeight);
   printf("biSizeImage=%08x ", iHeader.biSizeImage);
   printf("skipSize=%d ", skipSize);
   printf("sizeof(BitmapFileHeader)=%d ", sizeof(BitmapFileHeader));
-  printf("sizeof(BitmapInformationHeader)=%d ", sizeof(BitmapInformationHeader));
-  printf("\n");	 
+  printf("sizeof(BitmapInformationHeader)=%d ",
+         sizeof(BitmapInformationHeader));
+  printf("\n");
 
   FrameBuffer fbIn(iHeader.biHeight, iHeader.biWidth);
 
@@ -87,14 +90,14 @@ int main(int argc, char *argv[]){
 
   fread(fbIn.buf, sizeof(byte), iHeader.biSizeImage, fp);
 
-  for(unsigned int i = 0; i < iHeader.biSizeImage; i++){
+  for (unsigned int i = 0; i < iHeader.biSizeImage; i++) {
     fbIn.buf[i] = swapbit8(fbIn.buf[i]);
   }
-  
-  for(int i = 0 ; i < vfd.xsize; i++){
-    for(int j = 0; j < vfd.ysize; j++){
-      if(fbIn.getPixel(vfd.ysize-j, i)){
-	fbOut.pset(i, j);
+
+  for (int i = 0; i < vfd.xsize; i++) {
+    for (int j = 0; j < vfd.ysize; j++) {
+      if (fbIn.getPixel(vfd.ysize - j, i)) {
+        fbOut.pset(i, j);
       }
     }
   }
